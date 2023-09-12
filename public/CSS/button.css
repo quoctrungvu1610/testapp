@@ -1,0 +1,27 @@
+
+  /*CSS BUTTON*/
+  .button {
+  display: inline-block;
+  padding: 1px 3px;
+  font-size: 13px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  outline: none;
+  color: #fff;
+
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 0px #999;
+}
+
+.button:hover {background-color: #25327b}
+
+.button:active {
+  background-color: #58257b;
+  box-shadow: 0 0px #666;
+  transform: translateY(4px);
+}
+.button1 {background-color: #4CAF50;} /* Green */
+.button2 {background-color: #ba0000;} /* Blue */
+

@@ -1,0 +1,19 @@
+{
+  "name": "wureportsrv",
+  "version": "10.6.0",
+  "description": "Wincc unified Report by Ngoc Automation",
+  "main": "UnifiedRSrv.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "lodash": "^4.17.21",
+    "mysql": "^2.18.1",
+    "nodes7": "^0.3.18",
+    "socket.io": "^4.7.2"
+  }
+}

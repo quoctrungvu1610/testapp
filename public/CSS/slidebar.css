@@ -1,0 +1,55 @@
+/*Slide bar chính*/
+#slidebar {
+    position: absolute; 
+    left: 5px; top: 11px; 
+    width: 210px; height: 98%;
+    background-color: rgb(66, 78, 76); 
+}
+
+/*LOGO*/
+#pic_Logo {
+    width: 210px; height: 200px;
+    margin:0 auto;text-align:center
+}
+
+/*//////////////TRƯỜNG TÌM KIẾM DỮ LIỆU/////////////////*/
+/*Form date time piker*/
+#div_search_range {
+    color: rgb(255, 255, 255);   
+    font-size: 14px; 
+    font-weight: normal;
+    position: absolute; 
+    left: 10px; top: 190px;
+    line-height: 1.8;
+}
+
+/*Nút tìm kiếm*/
+#btt_Search {
+    border: none; 
+    background-color: DodgerBlue; 
+    color: rgb(255, 255, 255);  
+    text-align: center; 
+    display: inline-block;
+    font-size: 11px; 
+    font-weight: bold;
+    cursor: pointer;
+    position: absolute; 
+    width: 188px; height: 40px; 
+    left: 10px; top: 300px;
+}
+
+/*Nút Xuaast Excel*/
+#btt_Excel {
+    border: none; 
+    background-color: rgb(14, 199, 153); 
+    color: rgb(255, 255, 255);  
+    text-align: center; 
+    display: inline-block;
+    font-size: 11px; 
+    font-weight: bold;
+    cursor: pointer;
+    position: absolute; 
+    width: 188px; height: 40px; 
+    left: 10px; top: 350px;
+}
+

@@ -1,0 +1,57 @@
+<html>
+<!-- Phần Header của Website -->
+<head>
+    <!-- ////////////// SYSTEM CODE //////////////  -->
+    <!-- 1. Chương trình js hệ thống-->
+    <script src = "socket.io/socket.io.js"></script>
+    <script src = "js/sys/jquery-3.6.0.min.js"></script>
+    <script src = "js/sys/FileSaver.js"></script>
+    <!-- 2. Chương trình con tự tạo-->
+    <script src = "js/SQL_Data.js"></script>
+    <!-- 3. Gọi các style CSS  -->
+    <link rel="stylesheet" href= "CSS/button.css">
+    <link rel="stylesheet" href= "CSS/slidebar.css">
+    <link rel="stylesheet" href= "CSS/Screen_Data.css">
+
+    <!-- ////////////// CÀI ĐẶT //////////////  -->
+    <title>Wincc unified Report Server</title>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+    <!--  IP tĩnh (hoặc IP động, hoặc localhost) //////////////  -->
+    <script>
+        var web_url = "https://localhost:4430";
+        var socket = io(web_url);
+    </script>
+</head>
+
+<!-- Phần thân của website -->
+<body>
+    <!-- /////////////////////SLIDEBAR/////////////////// -->
+    <div id = "slidebar">
+        <!--Hình ảnh Logo-->
+        <img id="pic_Logo" src="images/Logo.png">
+        <!--Date time piker-->
+        <div id = "div_search_range">
+            <label>Tìm kiếm từ:</label><br>
+            <input id="dtpk_Search_Start" type="datetime-local" value="2023-03-30T11:01"><br>
+            <label>Tìm kiếm đến:</label><br>
+            <input id="dtpk_Search_End" type="datetime-local" value="2023-03-31T16:30">
+        </div>
+        <!--Nút tìm kiếm-->
+        <button id="btt_Search" class="button" onclick="fn_sqlSearch();"></i> TÌM KIẾM</button><br>
+        <script>fn_sql_result();</script>
+        <!--Nút Xuất báo cáo Excel-->
+        <button id="btt_Excel" class="button" onclick="fn_excel_req();"></i> BÁO CÁO</button>
+        <script>fn_excel_result();</script>
+    </div>
+
+<!-- //////////////DIV MÀN HÌNH DỮ LIỆU////////////// -->
+    <div id = "Screen_Data">
+        <!--Table display-->
+        <div id = "div_Table_01">
+            <table id="table_01"></table>
+        </div>
+    </div>
+    <script>fn_tbheader_load();</script>
+</body>
+</html>
+
