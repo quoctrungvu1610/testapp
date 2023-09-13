@@ -112,3 +112,71 @@ var coppyright = {
     fn_Excel_Report(SQL_Result,webUrl);
   }
   });
+  /////////////////////////////////////////////////////////////////////////
+                            // EXCEL REPORT //
+/////////////////////////////////////////////////////////////////////////
+const exjs = require('nodes7/ngocautores/exceljs.js');
+//1. cài đặt thông số chung
+var tabname     = 'BÁO CÁO DỮ LIỆU VẬN HÀNH HỆ THỐNG DI';
+var pagestyle   = 'portrait';
+var companyname = 'Công Ty CP Tập đoàn Trường Hải (THACO)';
+var add         = 'Địa chỉ:  Trung Tâm R&D';
+var phonenumber = 'Hotline: +84904701605';
+
+var reportname             = "BÁO CÁO DỮ LIỆU VẬN HÀNH HỆ THỐNG DI";
+var reportname_rowpos      = 5; // Vị trí hàng tên báo cáo
+var header_list            = ["STT","Thời gian","Mức thấp nước chưa qua xử lý","Mức vừa nước chưa qua xử lý","Mức cao nước chưa qua xử lý","Độ dẫn điện nước đã xử lý","Áp suất nước tại bể xả","Độ dẫn điện nước chưa xử lý","Ghi chú"]
+var header_rowpos          = 8;  // Vị trí hàng header
+var header_height          = 50; // Độ cao hàng header
+var header_width           = [12,20,15,15,15,15,15,15,20] // Độ rộng các cột
+
+//2. Cài đặt dữ liệu đọc lên từ SQL
+var key = [
+    {key: 'STT'},
+    {key: 'date_time'},
+    {key: 'Raw_Water_Tank_Level_Low'},
+    {key: 'Raw_tank_median'},
+    {key: 'Product_Count'},
+    {key: 'Flow_In'},
+    {key: 'Flow_Total'},
+    {key: 'Tank_Level'},
+  ]
+
+//3. Cài đặt hàng tổng cộng//////////////////////////////////
+var total_row_enable = true; // có hiện hàng tổng cộng không? (true = có, false = không).
+var totalrow = ['Tổng/TB:','','first','last','avg','avg','avg','sum','']; // sum, avg, first, last
+var totalrow_color = 'FFFF00'; // FFFF00 = Mã màu vàng
+//4. Cài đặt chữ ký
+var offset         = 2; // Ofset hàng ngày tháng
+var signname      = ['Người in biểu', 'Trưởng ca', 'Giám đốc'];
+var signname_pos  = ['I', 'E', 'B'];
+
+//5. Cài đặt đường dẫn lưu file
+var report_dir = "C:/Report";
+var report_name = "Report";
+
+////////////////////////SYSTEM CODE////////////////////////
+exjs.pageSetup(tabname,pagestyle,companyname,add,phonenumber);
+exjs.setupheader(reportname,reportname_rowpos,header_list,header_rowpos,header_height,header_width);
+exjs.totalrowcal(total_row_enable,totalrow,totalrow_color);
+exjs.signrow(offset, signname, signname_pos);
+exjs.reportFile(report_dir, report_name);
+///////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+            // EXCEL EXPORT BUTTON SQL READ AND EXPORT //
+/////////////////////////////////////////////////////////////////////////
+var exsave;
+io.on("connection", function(socket){
+socket.on("msg_Excel_Report", function(data)
+{
+  socket.emit('Excel_Report', exsave);
+})});
+
+// Excel export function
+function fn_Excel_Report(data,webUrl){
+  if (data.length != 0){
+    exjs.exceldata(data,key,webUrl);
+    exjs.fn_exceljs();
+    exsave =  exjs.exfilesave();
+  }
+}
