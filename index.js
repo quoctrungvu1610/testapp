@@ -14,9 +14,14 @@ var coppyright = {
   var PLC_IP      = '192.168.0.1';     // PLC IP address
   var Slot_ID     = 1;                 // S71200/1500 = 1, S7300/400 = 2
   var scanTime    = 1;                 // Scan time (second)
+
   var plc_tag     = "";                // Variable save PLC tags value
+  var uf_plc_tag  = "";
+
   var tagval_show    = true;           // Show tag value (true = yes, false = no)
-  
+  var uf_tagval_show = true;
+
+
   //2. PLC tag defined
   var config_tag = {
     Raw_Water_Conductivity: 'DB11,REAL0',     
@@ -34,14 +39,26 @@ var coppyright = {
     CIP_Temperature_value: 'DB19,REAL58',     
     CIP_Temperature__normal_set: 'DB19,REAL54',
     //Report_Trigger: 'DB11,X26.0' 
+
+    //Thêm các tag của UF trong này nhé em
+    //Ví dụ 
+    // Shaft_seal_pressure_value: 'DB19,REAL12',     
+    // Shaft_seal_pressure__normal_set: 'DB19,REAL8',     
+    // Transfer_pressure_Value: 'DB19,REAL28',     
+    // Transfer_pressure__normal_set: 'DB19,REAL24',     
+    // CIP_Temperature_value: 'DB19,REAL58',     
+    // CIP_Temperature__normal_set: 'DB19,REAL54',
   };
-  //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  //3. System code (Fixed for all project)
+
   var s7plc = require('nodes7/ngocautores/s7plc.js');
-  s7plc.resource(coppyright);
+
+
+  s7plc.resource(coppyright); 
   s7plc.val_Setup(PLC_IP, Slot_ID, config_tag, tagval_show);
   s7plc.para_Load();
   setInterval(() => plc_tag = s7plc.tag_read(),scanTime*1000);
+
+
   //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   /////////////////////////////////////////////////////////////////////////
                         // MYSQL CONFIGURATION //
@@ -57,11 +74,19 @@ var coppyright = {
   mysql.basiccofig(host_IP, user, password, DBname);
   //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   // 1. Table define and trigger define
+
+
   var tableName = "plc_data"; // Table Name
-  var sqlins_trigger = false; // Trigger define
+  var sqlins_trigger = false; // Trigger define 
+
+  //UF 
+  var uftableName = "uf_plc_data";
+  var sqlins_trigger_uf = false;
   
   // 2. Trigger config (Auto inserch each 5second - User can be defined)
   setInterval(() => sqlins_trigger = true,10000);
+  //UF
+  setInterval(() => sqlins_trigger_uf = true,10000);
   //sqlins_trigger = plc_tag.Report_Trigger;
   //sqlins_trigger = plc_tag.Report_Trigger
   // 3. Table data configuration
@@ -83,19 +108,37 @@ var coppyright = {
     CIP_Temperature__normal_set: plc_tag.CIP_Temperature__normal_set
     
   };
-  //var sqlins_done = mysql.fn_sqlins(tableName, sqlins_trigger, Object.values(sqldata));
-  //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   // 4. System code (Fixed for all project)
   var sqlins_done = mysql.fn_sqlins(tableName, sqlins_trigger, sqldata);
   if(sqlins_done == true) {sqlins_trigger = false};
   }
   setInterval(() => sqlinsert(),1000);
+
+  //UF
+  function ufsqlinsert(){
+    var sqldata = {
+      // Shaft_seal_pressure_value: plc_tag.abc,     
+      // Shaft_seal_pressure__normal_set: plc_tag.abc,     
+      // Transfer_pressure_Value: plc_tag.abc,     
+      // Transfer_pressure__normal_set: plc_tag.abc,     
+      // CIP_Temperature_value: plc_tag.abc,     
+      // CIP_Temperature__normal_set: plc_tag.abc,
+      
+    };
+    // 4. System code (Fixed for all project)
+    var sqlins_done = mysql.fn_sqlins(uf, sqlins_trigger_uf, sqldata);
+    if(sqlins_done == true) {sqlins_trigger_uf = false};
+    }
+    setInterval(() => ufsqlinsert(),1000);
+
+
   //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   /////////////////////////////////////////////////////////////////////////
                  // READ SQL DATA AND SEND TO BORROW //
   /////////////////////////////////////////////////////////////////////////
   const websocketmodule = require('nodes7/ngocautores/websocket.js');
   var io = websocketmodule.webinnit();
+
   io.on("connection", function(socket){
     socket.on("msg_sqlSearch", function(data){
       var timeS = data.timeS; // Time bắt đầu
@@ -112,6 +155,24 @@ var coppyright = {
     fn_Excel_Report(SQL_Result,webUrl);
   }
   });
+
+  io.on("connection", function(socket){
+    socket.on("msg_sqlSearch", function(data){
+      var timeS = data.timeS; // Time bắt đầu
+      var timeE = data.timeE; // Time kết thúc
+      mysql.sqlRead('plc_data', timeS, timeE);
+  ////////////////////////SYSTEM CODE////////////////////////
+      var webUrl = data.web_url;
+      setTimeout(function() {fn_webexecute(webUrl)}, 300);
+    });
+  ///////////////////////////////////////////////////////////
+  function fn_webexecute(webUrl){
+    var SQL_Result = mysql.sqlResult;
+    socket.emit('sqlSearch', SQL_Result);
+    fn_Excel_Report(SQL_Result,webUrl);
+  }
+  });
+
   /////////////////////////////////////////////////////////////////////////
                             // EXCEL REPORT //
 /////////////////////////////////////////////////////////////////////////
