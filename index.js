@@ -24,6 +24,7 @@ var coppyright = {
 
   //2. PLC tag defined
   var config_tag = {
+    //tag DI
     Raw_Water_Conductivity: 'DB11,REAL0',     
     Pure_Water_Conductivity: 'DB11,REAL4',     
     Concentrated_Water_Discharge: 'DB11,REAL8',     
@@ -32,23 +33,83 @@ var coppyright = {
     The_raw_water_tank_is_high: 'DB2,X12.5',     
     Pure_tank_median: 'DB2,X13.1',     
     The_pure_water_tank_is_high: 'DB2,X13.0',     
-    Shaft_seal_pressure_value: 'DB19,REAL12',     
-    Shaft_seal_pressure__normal_set: 'DB19,REAL8',     
-    Transfer_pressure_Value: 'DB19,REAL28',     
-    Transfer_pressure__normal_set: 'DB19,REAL24',     
-    CIP_Temperature_value: 'DB19,REAL58',     
-    CIP_Temperature__normal_set: 'DB19,REAL54',
-    //Report_Trigger: 'DB11,X26.0' 
-
-    //Thêm các tag của UF trong này nhé em
-    //Ví dụ 
     // Shaft_seal_pressure_value: 'DB19,REAL12',     
     // Shaft_seal_pressure__normal_set: 'DB19,REAL8',     
     // Transfer_pressure_Value: 'DB19,REAL28',     
     // Transfer_pressure__normal_set: 'DB19,REAL24',     
     // CIP_Temperature_value: 'DB19,REAL58',     
     // CIP_Temperature__normal_set: 'DB19,REAL54',
-  };
+    //Report_Trigger: 'DB11,X26.0' 
+
+    //Thêm các tag của UF trong này nhé em
+    //Ví dụ 
+    Shaft_seal_pressure_value: 'DB19,REAL12',     
+    Shaft_seal_pressure__normal_set: 'DB19,REAL8',     
+    Transfer_pressure_Value: 'DB19,REAL28',     
+    Transfer_pressure__normal_set: 'DB19,REAL24',     
+    CIP_Temperature_value: 'DB19,REAL58',     
+    CIP_Temperature__normal_set: 'DB19,REAL54',
+    // Tag chiller
+    Chilled_water_pump_1_running_feedback_1: 'DB157,X1.4',     
+    Cooling__pump_1_fault_summary: 'DB157,X1.3',
+    Chilled_water_pump_2_running_feedback_1: 'DB157,X1.7',    
+    Cooling__pump_2_fault_summary: 'DB157,X1.6',    
+    Chilled_water_pump_1_running_feedback: 'DB157,X0.4',     
+    Chilled_pump_1_fault_summary: 'DB157,X0.3',     
+    Chilled_water_pump_2_running_feedback: 'DB157,X0.7',  
+    Chiller_Tower_fan_running_feedback: 'DB157,X1.1',   
+    Cooling_Tower_fault_summary: 'DB157,X1.0',     
+    Chiller_run_indicate: 'DB157,X0.1',     
+    Chiller_running_fault_signal: 'DB157,X0.0',   
+    Cooling__pump_1_run_allowed: 'DB157,X1.2',     
+    Cooling__pump_2_run_allowed: 'DB157,X1.5',   
+    Chilled_pump_1_run_allowed: 'DB157,X1.2',     
+    Chilled_pump_2_run_allowed: 'DB157,X0.5', 
+    //tag tach dau nuoc
+    Thanh_nhiet_dien_1_chay_phan_hoi: 'DB136,X2.4',     
+    Thanh_nhiet_dien_2_chay_phan_hoi: 'DB136,X2.5',     
+    Thanh_nhiet_dien_3_chay_phan_hoi: 'DB136,X2.6',    
+    Phan_hoi_van_hanh_bom_hoi_luu: 'DB136,X2.7',
+    Van_dau_vao_tay_dau_mo_mo_full: 'DB136,X3.2',    
+    Van_dau_vao_tay_dau_mo_dong_full: 'DB136,X3.3',     
+    Thanh_nhiet_1_bao_loi: 'DB136,X14.7',     
+    Thanh_nhiet_2_bao_loi: 'DB136,X15.0',  
+    Thanh_nhiet_3_bao_loi: 'DB136,X15.1',
+    Thanh_nhiet_3_bao_loi: 'DB136,X15.2',  
+    Nhiet_do_be_tach_dau_nuoc: 'DB136,INT22',  
+    Muc_chat_long_thuc_te_trong_vung_gia_nhiet: 'DB136,INT24',     
+    Muc_chat_long_thuc_te_trong_vung_chat_long_sach: 'DB136,INT26',   
+    Electric_heater_1_starts: 'DB139,X0.0',    
+    Electric_heater_1_stops: 'DB139,X0.1',    
+    Electric_heater_2_starts: 'DB139,X0.2',   
+    Electric_heater_2_stops: 'DB139,X0.3',     
+    Electric_heater_3_starts: 'DB139,X0.4',     
+    Electric_heater_3_stops: 'DB139,X0.5',  
+    The_return_pump_starts: 'DB139,X0.6',    
+    The_return_pump_stops: 'DB139,X0.7',     
+    The_degreasing_inlet_valve_opens: 'DB139,X1.0',    
+    The_degreasing_inlet_valve_is_closed: 'DB139,X1.1',     
+    Set_the_temperature_of_the_oil_water_separation_tank: 'DB139,INT2',     
+    Emergency_stop_failure: 'DB137,X0.0',    
+    The_main_circuit_breaker_is_not_switched_on: 'DB137,X0.1',     
+    Fire_signal_failure: 'DB137,X0.2',    
+    Electric_heater_1_empty_fault: 'DB137,X0.3',     
+    Electric_heater_1_contactor_failure: 'DB137,X0.4',     
+    Electric_heater_2_empty_fault: 'DB137,X0.5',     
+    Electric_heater_2_contactor_failure: 'DB137,X0.6',    
+    Electric_heater_3_empty_fault: 'DB137,X0.7',     
+    Electric_heater_3_contactor_failure: 'DB137,X1.0',    
+    The_return_pump_is_empty: 'DB137,X1.1',     
+    Return_pump_contactor_failure: 'DB137,X1.2',    
+    Low_level_alarm_in_heating_zone: 'DB137,X1.3',     
+    Low_level_alarm_in_the_clear_liquid_area: 'DB137,X1.4',     
+    High_liquid_level_alarm_in_heating_zone: 'DB137,X1.5',    
+    High_liquid_level_alarm_in_the_clear_liquid_area: 'DB137,X1.6',     
+    Overtemperature_alarm_of_oil_water_separation_tank: 'DB137,X1.7',    
+    Heating_zone_level_gauge_channel_failure: 'DB137,X2.0',     
+    The_clear_liquid_zone_level_gauge_channel_failure: 'DB137,X2.1',     
+    Oil_water_separation_RTD_channel_failure: 'DB137,X2.2' 
+     };
 
   var s7plc = require('nodes7/ngocautores/s7plc.js');
 
@@ -86,7 +147,7 @@ var coppyright = {
   // 2. Trigger config (Auto inserch each 5second - User can be defined)
   setInterval(() => sqlins_trigger = true,10000);
   //UF
-  setInterval(() => sqlins_trigger_uf = true,10000);
+  // setInterval(() => sqlins_trigger_uf = true,10000);
   //sqlins_trigger = plc_tag.Report_Trigger;
   //sqlins_trigger = plc_tag.Report_Trigger
   // 3. Table data configuration
@@ -114,7 +175,7 @@ var coppyright = {
   }
   setInterval(() => sqlinsert(),1000);
 
-  //UF
+  UF
   function ufsqlinsert(){
     var sqldata = {
       // Shaft_seal_pressure_value: plc_tag.abc,     
@@ -146,7 +207,7 @@ var coppyright = {
       mysql.sqlRead('plc_data', timeS, timeE);
   ////////////////////////SYSTEM CODE////////////////////////
       var webUrl = data.web_url;
-      setTimeout(function() {fn_webexecute(webUrl)}, 300);
+      setTimeout(function() {fn_webexecute(webUrl)}, 300);     
     });
   ///////////////////////////////////////////////////////////
   function fn_webexecute(webUrl){
