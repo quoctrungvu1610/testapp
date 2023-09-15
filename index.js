@@ -259,7 +259,7 @@ var coppyright = {
       Oil_water_separation_RTD_channel_failure: plc_tag.Oil_water_separation_RTD_channel_failure 
     };
     var sqlins_done = mysql.fn_sqlins(tachDauTableName, sqlins_trigger_tach_dau, sqldata);
-    if(sqlins_done == true) {sqlins_trigger_chiller = false};
+    if(sqlins_done == true) {sqlins_trigger_tach_dau = false};
   }
   setInterval(() => tachdausqlinsert(),1000);
 
