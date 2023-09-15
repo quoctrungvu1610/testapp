@@ -7,22 +7,15 @@ var coppyright = {
     whatsapp:     '+84946463905',
     telegram:     '+84946463905'
   }
-  /////////////////////////////////////////////////////////////////////////
-                    // CONNECT REPORT SERVER TO PLC //
-  /////////////////////////////////////////////////////////////////////////
-  // 1. PLC parameter setting
+
   var PLC_IP      = '192.168.0.1';     // PLC IP address
   var Slot_ID     = 1;                 // S71200/1500 = 1, S7300/400 = 2
   var scanTime    = 1;                 // Scan time (second)
 
   var plc_tag     = "";                // Variable save PLC tags value
-  var uf_plc_tag  = "";
 
   var tagval_show    = true;           // Show tag value (true = yes, false = no)
-  var uf_tagval_show = true;
 
-
-  //2. PLC tag defined
   var config_tag = {
     //tag DI
     Raw_Water_Conductivity: 'DB11,REAL0',     
@@ -33,16 +26,6 @@ var coppyright = {
     The_raw_water_tank_is_high: 'DB2,X12.5',     
     Pure_tank_median: 'DB2,X13.1',     
     The_pure_water_tank_is_high: 'DB2,X13.0',     
-    // Shaft_seal_pressure_value: 'DB19,REAL12',     
-    // Shaft_seal_pressure__normal_set: 'DB19,REAL8',     
-    // Transfer_pressure_Value: 'DB19,REAL28',     
-    // Transfer_pressure__normal_set: 'DB19,REAL24',     
-    // CIP_Temperature_value: 'DB19,REAL58',     
-    // CIP_Temperature__normal_set: 'DB19,REAL54',
-    //Report_Trigger: 'DB11,X26.0' 
-
-    //Thêm các tag của UF trong này nhé em
-    //Ví dụ 
     Shaft_seal_pressure_value: 'DB19,REAL12',     
     Shaft_seal_pressure__normal_set: 'DB19,REAL8',     
     Transfer_pressure_Value: 'DB19,REAL28',     
@@ -74,7 +57,7 @@ var coppyright = {
     Van_dau_vao_tay_dau_mo_dong_full: 'DB136,X3.3',     
     Thanh_nhiet_1_bao_loi: 'DB136,X14.7',     
     Thanh_nhiet_2_bao_loi: 'DB136,X15.0',  
-    Thanh_nhiet_3_bao_loi: 'DB136,X15.1',
+    //Thanh_nhiet_3_bao_loi: 'DB136,X15.1',
     Thanh_nhiet_3_bao_loi: 'DB136,X15.2',  
     Nhiet_do_be_tach_dau_nuoc: 'DB136,INT22',  
     Muc_chat_long_thuc_te_trong_vung_gia_nhiet: 'DB136,INT24',     
@@ -109,7 +92,7 @@ var coppyright = {
     Heating_zone_level_gauge_channel_failure: 'DB137,X2.0',     
     The_clear_liquid_zone_level_gauge_channel_failure: 'DB137,X2.1',     
     Oil_water_separation_RTD_channel_failure: 'DB137,X2.2' 
-     };
+  };
 
   var s7plc = require('nodes7/ngocautores/s7plc.js');
 
@@ -119,38 +102,36 @@ var coppyright = {
   s7plc.para_Load();
   setInterval(() => plc_tag = s7plc.tag_read(),scanTime*1000);
 
-
-  //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  /////////////////////////////////////////////////////////////////////////
-                        // MYSQL CONFIGURATION //
-  /////////////////////////////////////////////////////////////////////////
-  // 1 - Database parameter setting
+  // MYSQL CONFIGURATION //
   var host_IP     = "localhost";
   var user        = "root";
   var password    = "123456";
   var DBname      = "sql_plc1";
-  //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  // 2. System code (Fixed for all project)
+
   const mysql = require('nodes7/ngocautores/mysqlconfig.js');
   mysql.basiccofig(host_IP, user, password, DBname);
-  //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  // 1. Table define and trigger define
 
-
-  var tableName = "plc_data"; // Table Name
-  var sqlins_trigger = false; // Trigger define 
+  //DI
+  var tableName = "plc_data"; 
+  var sqlins_trigger = false;
 
   //UF 
-  var uftableName = "uf_plc_data";
+  var ufTableName = "uf_plc_data";
   var sqlins_trigger_uf = false;
+
+  //CHILLER
+  var chillerTableName = "chiller_plc_data";
+  var sqlins_trigger_chiller = false;
+
+  //TACH DAU NUOC
+  var tachDauTableName = "tach_dau_plc_data";
+  var sqlins_trigger_tach_dau = false;
   
-  // 2. Trigger config (Auto inserch each 5second - User can be defined)
+
+
+
+  //DI
   setInterval(() => sqlins_trigger = true,10000);
-  //UF
-  // setInterval(() => sqlins_trigger_uf = true,10000);
-  //sqlins_trigger = plc_tag.Report_Trigger;
-  //sqlins_trigger = plc_tag.Report_Trigger
-  // 3. Table data configuration
   function sqlinsert(){
   var sqldata = {
     Raw_Water_Conductivity:      plc_tag.Raw_Water_Conductivity,
@@ -169,13 +150,17 @@ var coppyright = {
     CIP_Temperature__normal_set: plc_tag.CIP_Temperature__normal_set
     
   };
-  // 4. System code (Fixed for all project)
   var sqlins_done = mysql.fn_sqlins(tableName, sqlins_trigger, sqldata);
   if(sqlins_done == true) {sqlins_trigger = false};
   }
   setInterval(() => sqlinsert(),1000);
 
-  UF
+
+
+
+
+  //UF
+  setInterval(() => sqlins_trigger_uf = true,10000);
   function ufsqlinsert(){
     var sqldata = {
       // Shaft_seal_pressure_value: plc_tag.abc,     
@@ -186,57 +171,180 @@ var coppyright = {
       // CIP_Temperature__normal_set: plc_tag.abc,
       
     };
-    // 4. System code (Fixed for all project)
-    var sqlins_done = mysql.fn_sqlins(uf, sqlins_trigger_uf, sqldata);
+    var sqlins_done = mysql.fn_sqlins(ufTableName, sqlins_trigger_uf, sqldata);
     if(sqlins_done == true) {sqlins_trigger_uf = false};
-    }
-    setInterval(() => ufsqlinsert(),1000);
+  }
+  setInterval(() => ufsqlinsert(),1000);
 
 
-  //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  /////////////////////////////////////////////////////////////////////////
-                 // READ SQL DATA AND SEND TO BORROW //
-  /////////////////////////////////////////////////////////////////////////
+
+
+
+  //CHILLER
+  setInterval(() => sqlins_trigger_chiller = true,10000);
+  function chillersqlinsert(){
+    var sqldata = {
+      Chilled_water_pump_1_running_feedback_1: plc_tag.Chilled_water_pump_1_running_feedback_1,     
+      Cooling__pump_1_fault_summary: plc_tag.Cooling__pump_1_fault_summary,
+      Chilled_water_pump_2_running_feedback_1: plc_tag.Chilled_water_pump_2_running_feedback_1,    
+      Cooling__pump_2_fault_summary: plc_tag.Cooling__pump_2_fault_summary,    
+      Chilled_water_pump_1_running_feedback: plc_tag.Chilled_water_pump_1_running_feedback,     
+      Chilled_pump_1_fault_summary: plc_tag.Chilled_pump_1_fault_summary,     
+      Chilled_water_pump_2_running_feedback: plc_tag.Chilled_water_pump_2_running_feedback,  
+      Chiller_Tower_fan_running_feedback: plc_tag.Chiller_Tower_fan_running_feedback,   
+      Cooling_Tower_fault_summary: plc_tag.Cooling_Tower_fault_summary,     
+      Chiller_run_indicate: plc_tag.Chiller_run_indicate,     
+      Chiller_running_fault_signal: plc_tag.Chiller_running_fault_signal,   
+      Cooling__pump_1_run_allowed: plc_tag.Cooling__pump_1_run_allowed,     
+      Cooling__pump_2_run_allowed: plc_tag.Cooling__pump_2_run_allowed,   
+      Chilled_pump_1_run_allowed: plc_tag.Chilled_pump_1_run_allowed,     
+      Chilled_pump_2_run_allowed: plc_tag.Chilled_pump_2_run_allowed,
+      
+    };
+    var sqlins_done = mysql.fn_sqlins(chillerTableName, sqlins_trigger_chiller, sqldata);
+    if(sqlins_done == true) {sqlins_trigger_chiller = false};
+  }
+  setInterval(() => chillersqlinsert(),1000);
+
+
+
+
+  //TACH DAU NUOC
+  //CHILLER
+  setInterval(() => sqlins_trigger_tach_dau = true,10000);
+  function tachdausqlinsert(){
+    var sqldata = {
+      Thanh_nhiet_dien_1_chay_phan_hoi: plc_tag.Thanh_nhiet_dien_1_chay_phan_hoi,     
+      Thanh_nhiet_dien_2_chay_phan_hoi: plc_tag.Thanh_nhiet_dien_2_chay_phan_hoi,     
+      Thanh_nhiet_dien_3_chay_phan_hoi: plc_tag.Thanh_nhiet_dien_3_chay_phan_hoi,    
+      Phan_hoi_van_hanh_bom_hoi_luu: plc_tag.Phan_hoi_van_hanh_bom_hoi_luu,
+      Van_dau_vao_tay_dau_mo_mo_full: plc_tag.Van_dau_vao_tay_dau_mo_mo_full,    
+      Van_dau_vao_tay_dau_mo_dong_full: plc_tag.Van_dau_vao_tay_dau_mo_dong_full,     
+      Thanh_nhiet_1_bao_loi: plc_tag.Thanh_nhiet_1_bao_loi,     
+      Thanh_nhiet_2_bao_loi: plc_tag.Thanh_nhiet_2_bao_loi,  
+      Thanh_nhiet_3_bao_loi: plc_tag.Thanh_nhiet_3_bao_loi,
+      //Thanh_nhiet_3_bao_loi: plc_tag.Thanh_nhiet_3_bao_loi,  
+      Nhiet_do_be_tach_dau_nuoc: plc_tag.Nhiet_do_be_tach_dau_nuoc,  
+      Muc_chat_long_thuc_te_trong_vung_gia_nhiet: plc_tag.Muc_chat_long_thuc_te_trong_vung_gia_nhiet,     
+      Muc_chat_long_thuc_te_trong_vung_chat_long_sach: plc_tag.Muc_chat_long_thuc_te_trong_vung_chat_long_sach,   
+      Electric_heater_1_starts: plc_tag.Electric_heater_1_starts,    
+      Electric_heater_1_stops: plc_tag.Electric_heater_1_stops,    
+      Electric_heater_2_starts: plc_tag.Electric_heater_2_starts,   
+      Electric_heater_2_stops: plc_tag.Electric_heater_2_stops,     
+      Electric_heater_3_starts: plc_tag.Electric_heater_3_starts,     
+      Electric_heater_3_stops: plc_tag.Electric_heater_3_stops,  
+      The_return_pump_starts: plc_tag.The_return_pump_starts,    
+      The_return_pump_stops: plc_tag.The_return_pump_stops,     
+      The_degreasing_inlet_valve_opens: plc_tag.The_degreasing_inlet_valve_opens,    
+      The_degreasing_inlet_valve_is_closed: plc_tag.The_degreasing_inlet_valve_is_closed,     
+      Set_the_temperature_of_the_oil_water_separation_tank: plc_tag.Set_the_temperature_of_the_oil_water_separation_tank,     
+      Emergency_stop_failure: plc_tag.Emergency_stop_failure,    
+      The_main_circuit_breaker_is_not_switched_on: plc_tag.The_main_circuit_breaker_is_not_switched_on,     
+      Fire_signal_failure: plc_tag.Fire_signal_failure,    
+      Electric_heater_1_empty_fault: plc_tag.Electric_heater_1_empty_fault,     
+      Electric_heater_1_contactor_failure: plc_tag.Electric_heater_1_contactor_failure,     
+      Electric_heater_2_empty_fault: plc_tag.Electric_heater_2_empty_faul,     
+      Electric_heater_2_contactor_failure: plc_tag.Electric_heater_2_contactor_failure,    
+      Electric_heater_3_empty_fault: plc_tag.Electric_heater_3_empty_fault,     
+      Electric_heater_3_contactor_failure: plc_tag.Electric_heater_3_contactor_failure,    
+      The_return_pump_is_empty: plc_tag.The_return_pump_is_empty,     
+      Return_pump_contactor_failure: plc_tag.Return_pump_contactor_failure,    
+      Low_level_alarm_in_heating_zone: plc_tag.Low_level_alarm_in_heating_zone,     
+      Low_level_alarm_in_the_clear_liquid_area: plc_tag.Low_level_alarm_in_the_clear_liquid_area,     
+      High_liquid_level_alarm_in_heating_zone: plc_tag.High_liquid_level_alarm_in_heating_zone,    
+      High_liquid_level_alarm_in_the_clear_liquid_area: plc_tag.High_liquid_level_alarm_in_the_clear_liquid_area,     
+      Overtemperature_alarm_of_oil_water_separation_tank: plc_tag.Overtemperature_alarm_of_oil_water_separation_tank,    
+      Heating_zone_level_gauge_channel_failure: plc_tag.Heating_zone_level_gauge_channel_failure,     
+      The_clear_liquid_zone_level_gauge_channel_failure: plc_tag.The_clear_liquid_zone_level_gauge_channel_failure,     
+      Oil_water_separation_RTD_channel_failure: plc_tag.Oil_water_separation_RTD_channel_failure 
+    };
+    var sqlins_done = mysql.fn_sqlins(tachDauTableName, sqlins_trigger_tach_dau, sqldata);
+    if(sqlins_done == true) {sqlins_trigger_chiller = false};
+  }
+  setInterval(() => tachdausqlinsert(),1000);
+
+
+
+
+  // READ SQL DATA AND SEND TO BORROW
+
   const websocketmodule = require('nodes7/ngocautores/websocket.js');
   var io = websocketmodule.webinnit();
 
+
+  //DI - Mess: msq_sqlSearch - Table: plc_data - sqlSearch
   io.on("connection", function(socket){
     socket.on("msg_sqlSearch", function(data){
       var timeS = data.timeS; // Time bắt đầu
       var timeE = data.timeE; // Time kết thúc
       mysql.sqlRead('plc_data', timeS, timeE);
-  ////////////////////////SYSTEM CODE////////////////////////
       var webUrl = data.web_url;
       setTimeout(function() {fn_webexecute(webUrl)}, 300);     
-    });
-  ///////////////////////////////////////////////////////////
+  });
   function fn_webexecute(webUrl){
     var SQL_Result = mysql.sqlResult;
     socket.emit('sqlSearch', SQL_Result);
     fn_Excel_Report(SQL_Result,webUrl);
-  }
-  });
+  }});
 
+
+
+
+  //UF - Mess: msg_uf_sqlSearch - Table: uf_plc_data - uf_sqlSearch
   io.on("connection", function(socket){
-    socket.on("msg_sqlSearch", function(data){
+    socket.on("msg_uf_sqlSearch", function(data){
       var timeS = data.timeS; // Time bắt đầu
       var timeE = data.timeE; // Time kết thúc
-      mysql.sqlRead('plc_data', timeS, timeE);
-  ////////////////////////SYSTEM CODE////////////////////////
+      mysql.sqlRead('uf_plc_data', timeS, timeE);
       var webUrl = data.web_url;
-      setTimeout(function() {fn_webexecute(webUrl)}, 300);
-    });
-  ///////////////////////////////////////////////////////////
-  function fn_webexecute(webUrl){
-    var SQL_Result = mysql.sqlResult;
-    socket.emit('sqlSearch', SQL_Result);
-    fn_Excel_Report(SQL_Result,webUrl);
-  }
+      setTimeout(function() {fn_webexecute(webUrl)}, 300);     
   });
+  function fn_uf_webexecute(webUrl){
+    var SQL_Result = mysql.sqlResult;
+    socket.emit('uf_sqlSearch', SQL_Result);
+    //fn_Excel_Report(SQL_Result,webUrl);
+  }});
 
-  /////////////////////////////////////////////////////////////////////////
-                            // EXCEL REPORT //
-/////////////////////////////////////////////////////////////////////////
+
+
+
+  //CHILLER - Mess: msg_chiller_sqlSearch - Table: chiller_plc_data - chiller_sqlSearch
+  io.on("connection", function(socket){
+    socket.on("msg_chiller_sqlSearch", function(data){
+      var timeS = data.timeS; // Time bắt đầu
+      var timeE = data.timeE; // Time kết thúc
+      mysql.sqlRead('chiller_plc_data', timeS, timeE);
+      var webUrl = data.web_url;
+      setTimeout(function() {fn_chiller_webexecute(webUrl)}, 300);     
+  });
+  function fn_chiller_webexecute(webUrl){
+    var SQL_Result = mysql.sqlResult;
+    socket.emit('chiller_sqlSearch', SQL_Result);
+    //fn_Excel_Report(SQL_Result,webUrl);
+  }});
+
+
+
+
+  //TACHDAU - Mess: msg_tach_dau_sqlSearch - Table: tach_dau_plc_data - tach_dau_sqlSearch
+  io.on("connection", function(socket){
+    socket.on("msg_tach_dau_sqlSearch", function(data){
+      var timeS = data.timeS; // Time bắt đầu
+      var timeE = data.timeE; // Time kết thúc
+      mysql.sqlRead('tach_dau_plc_data', timeS, timeE);
+      var webUrl = data.web_url;
+      setTimeout(function() {fn_tachdau_webexecute(webUrl)}, 300);     
+  });
+  function fn_tachdau_webexecute(webUrl){
+    var SQL_Result = mysql.sqlResult;
+    socket.emit('tach_dau_sqlSearch', SQL_Result);
+    //fn_Excel_Report(SQL_Result,webUrl);
+  }});
+
+
+
+// EXCEL REPORT
+
 const exjs = require('nodes7/ngocautores/exceljs.js');
 //1. cài đặt thông số chung
 var tabname     = 'BÁO CÁO DỮ LIỆU VẬN HÀNH HỆ THỐNG DI';

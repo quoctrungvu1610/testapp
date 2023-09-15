@@ -1,42 +1,43 @@
 // Khai báo tên table
-var tableID = "table_01";
+var tableID = "table_01"; // ID của bảng
 // Khai báo Header table
 var tbheader = [
     "Thời gian",
-    "Raw_Water_Conductivity",
-    "Pure_Water_Conductivity",
-    "Concentrated_Water_Discharge",
-    "Raw_Water_Tank_Level_Low",
-    "Raw_tank_median",
-    "The_raw_water_tank_is_high",
-    "Pure_tank_median",
-    "The_pure_water_tank_is_high",
-    "Shaft_seal_pressure_value",
-    "Shaft_seal_pressure__normal_set",
-    "Transfer_pressure_Value",
-    "Transfer_pressure__normal_set",
-    "CIP_Temperature_value",
-    "CIP_Temperature__normal_set",
+    "Chilled_water_pump_1_running_feedback_1",
+    "Cooling__pump_1_fault_summary",
+    "Chilled_water_pump_2_running_feedback_1",
+    "Cooling__pump_2_fault_summary",
+    "Chilled_water_pump_1_running_feedback",
+    "Chilled_pump_1_fault_summary",
+    "Chilled_water_pump_2_running_feedback",
+    "Chiller_Tower_fan_running_feedback",
+    "Cooling_Tower_fault_summary",
+    "Chiller_run_indicate",
+    "Chiller_running_fault_signal",
+    "Cooling__pump_1_run_allowed",
+    "Cooling__pump_2_run_allowed",
+    "Chilled_pump_1_run_allowed",
+    "Chilled_pump_2_run_allowed",
 ]
-
 // Khai báo cột dữ liệu sql
 function fn_sql_col(column){
     var data = [
         column.date_time, 
-        column.Raw_Water_Conductivity, 
-        column.Pure_Water_Conductivity, 
-        column.Concentrated_Water_Discharge, 
-        column.Raw_Water_Tank_Level_Low, 
-        column.Raw_tank_median, 
-        column.The_raw_water_tank_is_high,
-        column.Pure_tank_median,
-        column.The_pure_water_tank_is_high,
-        column.Shaft_seal_pressure_value,
-        column.Shaft_seal_pressure__normal_set,
-        column.Transfer_pressure_Value,
-        column.Transfer_pressure__normal_set,
-        column.CIP_Temperature_value,
-        column.CIP_Temperature__normal_set
+        column.Chilled_water_pump_1_running_feedback_1, 
+        column.Cooling__pump_1_fault_summary, 
+        column.Chilled_water_pump_2_running_feedback_1, 
+        column.Cooling__pump_2_fault_summary, 
+        column.Chilled_water_pump_1_running_feedback, 
+        column.Chilled_pump_1_fault_summary,
+        column.Chilled_water_pump_2_running_feedback,
+        column.Chiller_Tower_fan_running_feedback,
+        column.Cooling_Tower_fault_summary,
+        column.Chiller_run_indicate,
+        column.Chiller_running_fault_signal,
+        column.Cooling__pump_1_run_allowed,
+        column.Cooling__pump_2_run_allowed,
+        column.Chilled_pump_1_run_allowed,
+        column.Chilled_pump_2_run_allowed,
     ];
     return data;
 }
@@ -109,4 +110,4 @@ function fn_excel_result(){
         window.open(file, '_blank');
     }); 
 }
-
+// ///////////////////////////////////////////////////////////////////////////////
