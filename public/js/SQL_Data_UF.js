@@ -3,23 +3,23 @@ var tableID = "table_01"; // ID của bảng
 // Khai báo Header table
 var tbheader = [
     "Thời gian",
-    "Trạng thái van 1",
-    "Trạng thái van 2",
-    'Số lượng sản phẩm',
-    'Lưu lượng nước vào (l/min)',
-    'Tổng lưu lượng (M3)',
-    'Mức bồn (%)',
+    "Shaft_seal_pressure_value",
+    "Shaft_seal_pressure__normal_set",
+    "Transfer_pressure_Value",
+    "Transfer_pressure__normal_set",
+    "CIP_Temperature_value",
+    "CIP_Temperature__normal_set",
 ]
 // Khai báo cột dữ liệu sql
 function fn_sql_col(column){
     var data = [
         column.date_time, 
-        column.Q_Valve1, 
-        column.Q_Valve2, 
-        column.Product_Count, 
-        column.Flow_In, 
-        column.Flow_Total, 
-        column.Tank_Level,
+        column.Shaft_seal_pressure_value, 
+        column.Shaft_seal_pressure__normal_set, 
+        column.Transfer_pressure_Value, 
+        column.Transfer_pressure__normal_set, 
+        column.CIP_Temperature_value, 
+        column.CIP_Temperature__normal_set,
     ];
     return data;
 }
@@ -68,11 +68,11 @@ function fn_sqlSearch()
                 timeE: document.getElementById('dtpk_Search_End').value,
                 web_url: web_url
               };
-    socket.emit('msg_sqlSearch', val);
+    socket.emit('msg_uf_sqlSearch`', val);
 }
 // Kết quả trả về sau khi nhận
 function fn_sql_result(){
-    socket.on('sqlSearch', function(data){
+    socket.on('uf_sqlSearch', function(data){
         fn_table(data); // Show sdata
         console.log(data);
     });
@@ -92,4 +92,4 @@ function fn_excel_result(){
         window.open(file, '_blank');
     }); 
 }
-// ///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////

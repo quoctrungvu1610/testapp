@@ -131,7 +131,7 @@ var coppyright = {
 
 
   //DI
-  setInterval(() => sqlins_trigger = true,10000);
+  setInterval(() => sqlins_trigger = true,2000);
   function sqlinsert(){
   var sqldata = {
     Raw_Water_Conductivity:      plc_tag.Raw_Water_Conductivity,
@@ -148,14 +148,14 @@ var coppyright = {
   var sqlins_done = mysql.fn_sqlins(tableName, sqlins_trigger, sqldata);
   if(sqlins_done == true) {sqlins_trigger = false};
   }
-  setInterval(() => sqlinsert(),1000);
+  //setInterval(() => sqlinsert(),1000);
 
 
 
 
 
   //UF
-  setInterval(() => sqlins_trigger_uf = true,10000);
+  setInterval(() => sqlins_trigger_uf = true,3000);
   function ufsqlinsert(){
     var sqldata = {
       
@@ -170,14 +170,14 @@ var coppyright = {
     var sqlins_done = mysql.fn_sqlins(ufTableName, sqlins_trigger_uf, sqldata);
     if(sqlins_done == true) {sqlins_trigger_uf = false};
   }
-  setInterval(() => ufsqlinsert(),1000);
+  //setInterval(() => ufsqlinsert(),2000);
 
 
 
 
 
   //CHILLER
-  setInterval(() => sqlins_trigger_chiller = true,10000);
+  setInterval(() => sqlins_trigger_chiller = true,4000);
   function chillersqlinsert(){
     var sqldata = {
       Chilled_water_pump_1_running_feedback_1: plc_tag.Chilled_water_pump_1_running_feedback_1,     
@@ -200,14 +200,14 @@ var coppyright = {
     var sqlins_done = mysql.fn_sqlins(chillerTableName, sqlins_trigger_chiller, sqldata);
     if(sqlins_done == true) {sqlins_trigger_chiller = false};
   }
-  setInterval(() => chillersqlinsert(),1000);
+  //setInterval(() => chillersqlinsert(),1000);
 
 
 
 
   //TACH DAU NUOC
   //CHILLER
-  setInterval(() => sqlins_trigger_tach_dau = true,10000);
+  setInterval(() => sqlins_trigger_tach_dau = true,5000);
   function tachdausqlinsert(){
     var sqldata = {
       Thanh_nhiet_dien_1_chay_phan_hoi: plc_tag.Thanh_nhiet_dien_1_chay_phan_hoi,     
@@ -257,9 +257,18 @@ var coppyright = {
     var sqlins_done = mysql.fn_sqlins(tachDauTableName, sqlins_trigger_tach_dau, sqldata);
     if(sqlins_done == true) {sqlins_trigger_tach_dau = false};
   }
-  setInterval(() => tachdausqlinsert(),1000);
 
+  //setInterval(() => tachdausqlinsert(),1000);
 
+  function InsertIntoPLC()
+  {
+      sqlinsert();
+      ufsqlinsert();
+      chillersqlinsert();
+      tachdausqlinsert();
+  }
+
+  setInterval(() => InsertIntoPLC(),1000);
 
 
   // READ SQL DATA AND SEND TO BORROW
@@ -273,7 +282,7 @@ var coppyright = {
     socket.on("msg_sqlSearch", function(data){
       var timeS = data.timeS; // Time bắt đầu
       var timeE = data.timeE; // Time kết thúc
-      mysql.sqlRead('plc_data', timeS, timeE);
+      mysql.sqlRead('di_plc_data', timeS, timeE);
       var webUrl = data.web_url;
       setTimeout(function() {fn_webexecute(webUrl)}, 300);     
   });
@@ -291,12 +300,12 @@ var coppyright = {
       var timeE = data.timeE; // Time kết thúc
       mysql.sqlRead('uf_plc_data', timeS, timeE);
       var webUrl = data.web_url;
-      setTimeout(function() {fn_webexecute(webUrl)}, 300);     
+      setTimeout(function() {fn_uf_webexecute(webUrl)}, 300);     
   });
   function fn_uf_webexecute(webUrl){
     var SQL_Result = mysql.sqlResult;
     socket.emit('uf_sqlSearch', SQL_Result);
-    //fn_Excel_Report(SQL_Result,webUrl);
+    fn_Excel_Report(SQL_Result,webUrl);
   }});
 
 
@@ -332,9 +341,9 @@ var coppyright = {
   function fn_tachdau_webexecute(webUrl){
     var SQL_Result = mysql.sqlResult;
     socket.emit('tach_dau_sqlSearch', SQL_Result);
-    //fn_Excel_Report(SQL_Result,webUrl);
+    fn_Excel_Report(SQL_Result,webUrl);
   }});
-
+//
 
 
 // EXCEL REPORT
