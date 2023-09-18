@@ -57,8 +57,8 @@ var coppyright = {
     Van_dau_vao_tay_dau_mo_dong_full: 'DB136,X3.3',     
     Thanh_nhiet_1_bao_loi: 'DB136,X14.7',     
     Thanh_nhiet_2_bao_loi: 'DB136,X15.0',  
-    //Thanh_nhiet_3_bao_loi: 'DB136,X15.1',
-    Thanh_nhiet_3_bao_loi: 'DB136,X15.2',  
+    Thanh_nhiet_3_bao_loi: 'DB136,X15.1',
+    Tin_hieu_loi_bom_hoi_luu: 'DB136,X15.2',  
     Nhiet_do_be_tach_dau_nuoc: 'DB136,INT22',  
     Muc_chat_long_thuc_te_trong_vung_gia_nhiet: 'DB136,INT24',     
     Muc_chat_long_thuc_te_trong_vung_chat_long_sach: 'DB136,INT26',   
@@ -112,7 +112,7 @@ var coppyright = {
   mysql.basiccofig(host_IP, user, password, DBname);
 
   //DI
-  var tableName = "plc_data"; 
+  var tableName = "di_plc_data"; 
   var sqlins_trigger = false;
 
   //UF 
@@ -142,12 +142,7 @@ var coppyright = {
     The_raw_water_tank_is_high:  plc_tag.The_raw_water_tank_is_high,
     Pure_tank_median:            plc_tag.Pure_tank_median,
     The_pure_water_tank_is_high: plc_tag.The_pure_water_tank_is_high,
-    Shaft_seal_pressure_value:   plc_tag.Shaft_seal_pressure_value,
-    Shaft_seal_pressure__normal_set: plc_tag.Shaft_seal_pressure__normal_set,
-    Transfer_pressure_Value:     plc_tag.Transfer_pressure_Value,
-    Transfer_pressure__normal_set:plc_tag.Transfer_pressure__normal_set,
-    CIP_Temperature_value:       plc_tag.CIP_Temperature_value,
-    CIP_Temperature__normal_set: plc_tag.CIP_Temperature__normal_set
+   
     
   };
   var sqlins_done = mysql.fn_sqlins(tableName, sqlins_trigger, sqldata);
@@ -163,12 +158,13 @@ var coppyright = {
   setInterval(() => sqlins_trigger_uf = true,10000);
   function ufsqlinsert(){
     var sqldata = {
-      // Shaft_seal_pressure_value: plc_tag.abc,     
-      // Shaft_seal_pressure__normal_set: plc_tag.abc,     
-      // Transfer_pressure_Value: plc_tag.abc,     
-      // Transfer_pressure__normal_set: plc_tag.abc,     
-      // CIP_Temperature_value: plc_tag.abc,     
-      // CIP_Temperature__normal_set: plc_tag.abc,
+      
+      Shaft_seal_pressure_value:   plc_tag.Shaft_seal_pressure_value,
+      Shaft_seal_pressure__normal_set: plc_tag.Shaft_seal_pressure__normal_set,
+      Transfer_pressure_Value:     plc_tag.Transfer_pressure_Value,
+      Transfer_pressure__normal_set:plc_tag.Transfer_pressure__normal_set,
+      CIP_Temperature_value:       plc_tag.CIP_Temperature_value,
+      CIP_Temperature__normal_set: plc_tag.CIP_Temperature__normal_set
       
     };
     var sqlins_done = mysql.fn_sqlins(ufTableName, sqlins_trigger_uf, sqldata);
@@ -223,7 +219,7 @@ var coppyright = {
       Thanh_nhiet_1_bao_loi: plc_tag.Thanh_nhiet_1_bao_loi,     
       Thanh_nhiet_2_bao_loi: plc_tag.Thanh_nhiet_2_bao_loi,  
       Thanh_nhiet_3_bao_loi: plc_tag.Thanh_nhiet_3_bao_loi,
-      //Thanh_nhiet_3_bao_loi: plc_tag.Thanh_nhiet_3_bao_loi,  
+      Tin_hieu_loi_bom_hoi_luu: plc_tag.Tin_hieu_loi_bom_hoi_luu,  
       Nhiet_do_be_tach_dau_nuoc: plc_tag.Nhiet_do_be_tach_dau_nuoc,  
       Muc_chat_long_thuc_te_trong_vung_gia_nhiet: plc_tag.Muc_chat_long_thuc_te_trong_vung_gia_nhiet,     
       Muc_chat_long_thuc_te_trong_vung_chat_long_sach: plc_tag.Muc_chat_long_thuc_te_trong_vung_chat_long_sach,   
@@ -286,8 +282,6 @@ var coppyright = {
     socket.emit('sqlSearch', SQL_Result);
     fn_Excel_Report(SQL_Result,webUrl);
   }});
-
-
 
 
   //UF - Mess: msg_uf_sqlSearch - Table: uf_plc_data - uf_sqlSearch

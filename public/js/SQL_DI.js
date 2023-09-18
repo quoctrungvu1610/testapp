@@ -11,12 +11,7 @@ var tbheader = [
     "The_raw_water_tank_is_high",
     "Pure_tank_median",
     "The_pure_water_tank_is_high",
-    "Shaft_seal_pressure_value",
-    "Shaft_seal_pressure__normal_set",
-    "Transfer_pressure_Value",
-    "Transfer_pressure__normal_set",
-    "CIP_Temperature_value",
-    "CIP_Temperature__normal_set",
+    
 ]
 
 // Khai báo cột dữ liệu sql
@@ -30,13 +25,7 @@ function fn_sql_col(column){
         column.Raw_tank_median, 
         column.The_raw_water_tank_is_high,
         column.Pure_tank_median,
-        column.The_pure_water_tank_is_high,
-        column.Shaft_seal_pressure_value,
-        column.Shaft_seal_pressure__normal_set,
-        column.Transfer_pressure_Value,
-        column.Transfer_pressure__normal_set,
-        column.CIP_Temperature_value,
-        column.CIP_Temperature__normal_set
+        column.The_pure_water_tank_is_high      
     ];
     return data;
 }
