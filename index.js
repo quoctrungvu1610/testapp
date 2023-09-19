@@ -305,7 +305,7 @@ var coppyright = {
   function fn_uf_webexecute(webUrl){
     var SQL_Result = mysql.sqlResult;
     socket.emit('uf_sqlSearch', SQL_Result);
-    fn_Excel_Report(SQL_Result,webUrl);
+    uf_fn_Excel_Report(SQL_Result,webUrl);
   }});
 
 
@@ -323,7 +323,7 @@ var coppyright = {
   function fn_chiller_webexecute(webUrl){
     var SQL_Result = mysql.sqlResult;
     socket.emit('chiller_sqlSearch', SQL_Result);
-    //fn_Excel_Report(SQL_Result,webUrl);
+    chiller_fn_Excel_Report(SQL_Result,webUrl);
   }});
 
 
@@ -341,13 +341,14 @@ var coppyright = {
   function fn_tachdau_webexecute(webUrl){
     var SQL_Result = mysql.sqlResult;
     socket.emit('tach_dau_sqlSearch', SQL_Result);
-    fn_Excel_Report(SQL_Result,webUrl);
+    //fn_Excel_Report(SQL_Result,webUrl);
   }});
 //
 
 
 // EXCEL REPORT
 
+//DI Excel Export
 const exjs = require('nodes7/ngocautores/exceljs.js');
 //1. cài đặt thông số chung
 var tabname     = 'BÁO CÁO DỮ LIỆU VẬN HÀNH HỆ THỐNG DI';
@@ -358,26 +359,28 @@ var phonenumber = 'Hotline: +84904701605';
 
 var reportname             = "BÁO CÁO DỮ LIỆU VẬN HÀNH HỆ THỐNG DI";
 var reportname_rowpos      = 5; // Vị trí hàng tên báo cáo
-var header_list            = ["STT","Thời gian","Mức thấp nước chưa qua xử lý","Mức vừa nước chưa qua xử lý","Mức cao nước chưa qua xử lý","Độ dẫn điện nước đã xử lý","Áp suất nước tại bể xả","Độ dẫn điện nước chưa xử lý","Ghi chú"]
+var header_list            = ["STT","Thời gian","Raw_Water_Conductivity","Pure_Water_Conductivity","Concentrated_Water_Discharge","Raw_Water_Tank_Level_Low","Raw_tank_median","The_raw_water_tank_is_high","Pure_tank_median","The_pure_water_tank_is_high","Ghi chú"]
 var header_rowpos          = 8;  // Vị trí hàng header
 var header_height          = 50; // Độ cao hàng header
-var header_width           = [12,20,15,15,15,15,15,15,20] // Độ rộng các cột
+var header_width           = [12,20,15,15,15,15,15,15,15,15,20] // Độ rộng các cột
 
 //2. Cài đặt dữ liệu đọc lên từ SQL
 var key = [
     {key: 'STT'},
     {key: 'date_time'},
+    {key: 'Raw_Water_Conductivity'},
+    {key: 'Pure_Water_Conductivity'},
+    {key: 'Concentrated_Water_Discharge'},
     {key: 'Raw_Water_Tank_Level_Low'},
     {key: 'Raw_tank_median'},
-    {key: 'Product_Count'},
-    {key: 'Flow_In'},
-    {key: 'Flow_Total'},
-    {key: 'Tank_Level'},
+    {key: 'The_raw_water_tank_is_high'},
+    {key: 'Pure_tank_median'},
+    {key: 'The_pure_water_tank_is_high'},
   ]
 
 //3. Cài đặt hàng tổng cộng//////////////////////////////////
 var total_row_enable = true; // có hiện hàng tổng cộng không? (true = có, false = không).
-var totalrow = ['Tổng/TB:','','first','last','avg','avg','avg','sum','']; // sum, avg, first, last
+var totalrow = ['Tổng/TB:','','','','first','last','avg','avg','avg','sum','']; // sum, avg, first, last
 var totalrow_color = 'FFFF00'; // FFFF00 = Mã màu vàng
 //4. Cài đặt chữ ký
 var offset         = 2; // Ofset hàng ngày tháng
@@ -389,11 +392,7 @@ var report_dir = "C:/Report";
 var report_name = "Report";
 
 ////////////////////////SYSTEM CODE////////////////////////
-exjs.pageSetup(tabname,pagestyle,companyname,add,phonenumber);
-exjs.setupheader(reportname,reportname_rowpos,header_list,header_rowpos,header_height,header_width);
-exjs.totalrowcal(total_row_enable,totalrow,totalrow_color);
-exjs.signrow(offset, signname, signname_pos);
-exjs.reportFile(report_dir, report_name);
+
 ///////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
             // EXCEL EXPORT BUTTON SQL READ AND EXPORT //
@@ -407,9 +406,124 @@ socket.on("msg_Excel_Report", function(data)
 
 // Excel export function
 function fn_Excel_Report(data,webUrl){
+
+  exjs.pageSetup(tabname,pagestyle,companyname,add,phonenumber);
+  exjs.setupheader(reportname,reportname_rowpos,header_list,header_rowpos,header_height,header_width);
+  exjs.totalrowcal(total_row_enable,totalrow,totalrow_color);
+  exjs.signrow(offset, signname, signname_pos);
+  exjs.reportFile(report_dir, report_name);
+
   if (data.length != 0){
     exjs.exceldata(data,key,webUrl);
     exjs.fn_exceljs();
     exsave =  exjs.exfilesave();
+  }
+}
+
+
+
+
+
+//UF Excel Export
+var uf_tabname     = 'BÁO CÁO DỮ LIỆU VẬN HÀNH HỆ THỐNG UF';
+
+var uf_reportname             = "BÁO CÁO DỮ LIỆU VẬN HÀNH HỆ THỐNG UF";
+var uf_reportname_rowpos      = 5; // Vị trí hàng tên báo cáo
+var uf_header_list            = ["STT","Thời gian","Shaft_seal_pressure_value","Shaft_seal_pressure__normal_set","Transfer_pressure_Value","Transfer_pressure__normal_set","CIP_Temperature_value","CIP_Temperature__normal_set","Ghi chú"]
+var uf_header_rowpos          = 8;  // Vị trí hàng header
+var uf_header_height          = 50; // Độ cao hàng header
+var uf_header_width           = [12,20,15,15,15,15,15,15,20] // Độ rộng các cột
+
+var uf_key = [
+    {key: 'STT'},
+    {key: 'date_time'},
+    {key: 'Shaft_seal_pressure_value'},
+    {key: 'Shaft_seal_pressure__normal_set'},
+    {key: 'Transfer_pressure_Value'},
+    {key: 'Transfer_pressure__normal_set'},
+    {key: 'CIP_Temperature_value'},
+    {key: 'CIP_Temperature__normal_set'},
+  ]
+
+var uf_totalrow = ['Tổng/TB:','','first','last','avg','avg','avg','sum','']; // sum, avg, first, last
+var uf_report_name = "UF_Report";
+
+var uf_exsave;
+io.on("connection", function(socket){
+socket.on("uf_msg_Excel_Report", function(data)
+{
+  socket.emit('uf_Excel_Report', uf_exsave);
+})});
+
+// Excel export function
+function uf_fn_Excel_Report(data,webUrl){
+
+  exjs.pageSetup(uf_tabname,pagestyle,companyname,add,phonenumber);
+  exjs.setupheader(uf_reportname,uf_reportname_rowpos,uf_header_list,uf_header_rowpos,uf_header_height,uf_header_width);
+  exjs.totalrowcal(total_row_enable,uf_totalrow,totalrow_color);
+  exjs.signrow(offset, signname, signname_pos);
+  exjs.reportFile(report_dir, uf_report_name);
+
+  if (data.length != 0){
+    exjs.exceldata(data,uf_key,webUrl);
+    exjs.fn_exceljs();
+    uf_exsave =  exjs.exfilesave();
+  }
+}
+
+
+
+//Chiller Excel Export
+var chiller_tabname     = 'BÁO CÁO DỮ LIỆU VẬN HÀNH HỆ THỐNG CHILLER';
+
+var chiller_reportname             = "BÁO CÁO DỮ LIỆU VẬN HÀNH HỆ THỐNG CHILLER";
+var chiller_reportname_rowpos      = 5; // Vị trí hàng tên báo cáo
+var chiller_header_list            = ["STT","Thời gian","Chilled_water_pump_1_running_feedback_1","Cooling__pump_1_fault_summary","Chilled_water_pump_2_running_feedback_1","Cooling__pump_2_fault_summary","Chilled_water_pump_1_running_feedback","Chilled_pump_1_fault_summary","Chilled_water_pump_2_running_feedback","Chiller_Tower_fan_running_feedback","Cooling_Tower_fault_summary","Chiller_run_indicate","Chiller_running_fault_signal","Cooling__pump_1_run_allowed","Cooling__pump_2_run_allowed","Chilled_pump_1_run_allowed","Chilled_pump_2_run_allowed","Ghi chú"]
+var chiller_header_rowpos          = 8;  // Vị trí hàng header
+var chiller_header_height          = 50; // Độ cao hàng header
+var chiller_header_width           = [12,20,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,20] // Độ rộng các cột
+
+var chiller_key = [
+    {key: 'STT'},
+    {key: 'date_time'},
+    {key: 'Chilled_water_pump_1_running_feedback_1'},
+    {key: 'Cooling__pump_1_fault_summary'},
+    {key: 'Chilled_water_pump_2_running_feedback_1'},
+    {key: 'Cooling__pump_2_fault_summary'},
+    {key: 'Chilled_water_pump_1_running_feedback'},
+    {key: 'Chilled_pump_1_fault_summary'},
+    {key: 'Chilled_water_pump_2_running_feedback'},
+    {key: 'Chiller_Tower_fan_running_feedback'},
+    {key: 'Cooling_Tower_fault_summary'},
+    {key: 'Chiller_run_indicate'},
+    {key: 'Chiller_running_fault_signal'},
+    {key: 'Cooling__pump_1_run_allowed'},
+    {key: 'Cooling__pump_2_run_allowed'},
+    {key: 'Chilled_pump_1_run_allowed'},
+    {key: 'Chilled_pump_2_run_allowed'},
+  ]
+
+var chiller_totalrow = ['Tổng/TB:','','','','','','','','','','','first','last','avg','avg','avg','sum','']; // sum, avg, first, last
+var chiller_report_name = "CHILLER_Report";
+
+var chiller_exsave;
+io.on("connection", function(socket){
+socket.on("chiller_msg_Excel_Report", function(data)
+{
+  socket.emit('chiller_Excel_Report', chiller_exsave);
+})});
+
+  // Excel export function
+function chiller_fn_Excel_Report(data,webUrl){
+  exjs.pageSetup(chiller_tabname,pagestyle,companyname,add,phonenumber);
+  exjs.setupheader(chiller_reportname,chiller_reportname_rowpos,chiller_header_list,chiller_header_rowpos,chiller_header_height,chiller_header_width);
+  exjs.totalrowcal(total_row_enable,chiller_totalrow,totalrow_color);
+  exjs.signrow(offset, signname, signname_pos);
+  exjs.reportFile(report_dir, chiller_report_name);
+
+  if (data.length != 0){
+    exjs.exceldata(data,chiller_key,webUrl);
+    exjs.fn_exceljs();
+    chiller_exsave =  exjs.exfilesave();
   }
 }

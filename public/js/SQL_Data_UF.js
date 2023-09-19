@@ -68,7 +68,7 @@ function fn_sqlSearch()
                 timeE: document.getElementById('dtpk_Search_End').value,
                 web_url: web_url
               };
-    socket.emit('msg_uf_sqlSearch`', val);
+    socket.emit('msg_uf_sqlSearch', val);
 }
 // Kết quả trả về sau khi nhận
 function fn_sql_result(){
@@ -80,11 +80,11 @@ function fn_sql_result(){
 
 // Hàm chức năng yêu cầu server xuất dữ liệu Excel
 function fn_excel_req(){
-    socket.emit("msg_Excel_Report", true);
+    socket.emit("uf_msg_Excel_Report", true);
 }
 // Kết quả nhận về sau khi xuất excel
 function fn_excel_result(){
-    socket.on('Excel_Report',function(data){
+    socket.on('uf_Excel_Report',function(data){
         linktext = data[0];
         bookname = data[1];
         var file = web_url +"/" + linktext;

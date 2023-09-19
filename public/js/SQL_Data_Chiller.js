@@ -98,11 +98,11 @@ function chiller_fn_sql_result(){
 
 // Hàm chức năng yêu cầu server xuất dữ liệu Excel
 function chiller_fn_excel_req(){
-    socket.emit("msg_Excel_Report", true);
+    socket.emit("chiller_msg_Excel_Report", true);
 }
 // Kết quả nhận về sau khi xuất excel
 function chiller_fn_excel_result(){
-    socket.on('Excel_Report',function(data){
+    socket.on('chiller_Excel_Report',function(data){
         linktext = data[0];
         bookname = data[1];
         var file = web_url +"/" + linktext;
