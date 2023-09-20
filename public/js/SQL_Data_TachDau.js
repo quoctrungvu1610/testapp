@@ -151,11 +151,11 @@ function tachdau_fn_sql_result(){
 
 // Hàm chức năng yêu cầu server xuất dữ liệu Excel
 function tachdau_fn_excel_req(){
-    socket.emit("msg_Excel_Report", true);
+    socket.emit("tach_dau_msg_Excel_Report", true);
 }
 // Kết quả nhận về sau khi xuất excel
 function tachdau_fn_excel_result(){
-    socket.on('Excel_Report',function(data){
+    socket.on('tach_dau_Excel_Report',function(data){
         linktext = data[0];
         bookname = data[1];
         var file = web_url +"/" + linktext;

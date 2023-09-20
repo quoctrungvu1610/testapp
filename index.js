@@ -341,7 +341,7 @@ var coppyright = {
   function fn_tachdau_webexecute(webUrl){
     var SQL_Result = mysql.sqlResult;
     socket.emit('tach_dau_sqlSearch', SQL_Result);
-    //fn_Excel_Report(SQL_Result,webUrl);
+    tach_dau_fn_Excel_Report(SQL_Result,webUrl);
   }});
 //
 
@@ -525,5 +525,88 @@ function chiller_fn_Excel_Report(data,webUrl){
     exjs.exceldata(data,chiller_key,webUrl);
     exjs.fn_exceljs();
     chiller_exsave =  exjs.exfilesave();
+  }
+}
+
+//Tach dau Excel Export
+var tach_dau_tabname     = 'BÁO CÁO DỮ LIỆU VẬN HÀNH HỆ THỐNG TÁCH DẦU';
+
+var tach_dau_reportname             = "BÁO CÁO DỮ LIỆU VẬN HÀNH HỆ THỐNG TÁCH DẦU";
+var tach_dau_reportname_rowpos      = 5; // Vị trí hàng tên báo cáo
+
+var tach_dau_header_list            = ["STT","Thời gian","Thanh_nhiet_dien_1_chay_phan_hoi","Thanh_nhiet_dien_2_chay_phan_hoi","Thanh_nhiet_dien_3_chay_phan_hoi","Phan_hoi_van_hanh_bom_hoi_luu","Van_dau_vao_tay_dau_mo_mo_full","Van_dau_vao_tay_dau_mo_dong_full","Thanh_nhiet_1_bao_loi","Thanh_nhiet_2_bao_loi","Thanh_nhiet_3_bao_loi","Nhiet_do_be_tach_dau_nuoc","Muc_chat_long_thuc_te_trong_vung_gia_nhiet","Muc_chat_long_thuc_te_trong_vung_chat_long_sach","Electric_heater_1_starts","Electric_heater_1_stops","Electric_heater_2_starts","Electric_heater_2_stops","Electric_heater_3_starts","Electric_heater_3_stops","The_return_pump_starts","The_return_pump_stops","The_degreasing_inlet_valve_opens","The_degreasing_inlet_valve_is_closed","Set_the_temperature_of_the_oil_water_separation_tank","Emergency_stop_failure","The_main_circuit_breaker_is_not_switched_on","Fire_signal_failure","Electric_heater_1_empty_fault","Electric_heater_1_contactor_failure","Electric_heater_2_empty_fault","Electric_heater_2_contactor_failure","Electric_heater_3_empty_fault","Electric_heater_3_contactor_failure","The_return_pump_is_empty","Return_pump_contactor_failure","Low_level_alarm_in_heating_zone","Low_level_alarm_in_the_clear_liquid_area","High_liquid_level_alarm_in_heating_zone","High_liquid_level_alarm_in_the_clear_liquid_area","Overtemperature_alarm_of_oil_water_separation_tank","Heating_zone_level_gauge_channel_failure","The_clear_liquid_zone_level_gauge_channel_failure","Oil_water_separation_RTD_channel_failure","Ghi chú"]
+var tach_dau_header_rowpos          = 8;  // Vị trí hàng header
+var tach_dau_header_height          = 50; // Độ cao hàng header
+var tach_dau_header_width           = [12,20,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,20] // Độ rộng các cột
+
+var tach_dau_key = [
+    {key: 'STT'},
+    {key: 'date_time'},
+    {key: 'Thanh_nhiet_dien_1_chay_phan_hoi'},
+    {key: 'Thanh_nhiet_dien_2_chay_phan_hoi'},
+    {key: 'Thanh_nhiet_dien_3_chay_phan_hoi'},
+    {key: 'Phan_hoi_van_hanh_bom_hoi_luu'},
+    {key: 'Van_dau_vao_tay_dau_mo_mo_full'},
+    {key: 'Van_dau_vao_tay_dau_mo_dong_full'},
+    {key: 'Thanh_nhiet_1_bao_loi'},
+    {key: 'Thanh_nhiet_2_bao_loi'},
+    {key: 'Thanh_nhiet_3_bao_loi'},
+    {key: 'Nhiet_do_be_tach_dau_nuoc'},
+    {key: 'Muc_chat_long_thuc_te_trong_vung_gia_nhiet'},
+    {key: 'Muc_chat_long_thuc_te_trong_vung_chat_long_sach'},
+    {key: 'Electric_heater_1_starts'},
+    {key: 'Electric_heater_1_stops'},
+    {key: 'Electric_heater_2_starts'},
+    {key: 'Electric_heater_2_stops'},
+    {key: 'Electric_heater_3_starts'},
+    {key: 'Electric_heater_3_stops'},
+    {key: 'The_return_pump_starts'},
+    {key: 'The_return_pump_stops'},
+    {key: 'The_degreasing_inlet_valve_opens'},
+    {key: 'The_degreasing_inlet_valve_is_closed'},
+    {key: 'Set_the_temperature_of_the_oil_water_separation_tank'},
+    {key: 'Emergency_stop_failure'},
+    {key: 'The_main_circuit_breaker_is_not_switched_on'},
+    {key: 'Fire_signal_failure'},
+    {key: 'Electric_heater_1_empty_fault'},
+    {key: 'Electric_heater_1_contactor_failure'},
+    {key: 'Electric_heater_2_empty_fault'},
+    {key: 'Electric_heater_2_contactor_failure'},
+    {key: 'Electric_heater_3_empty_fault'},
+    {key: 'Electric_heater_3_contactor_failure'},
+    {key: 'The_return_pump_is_empty'},
+    {key: 'Return_pump_contactor_failure'},
+    {key: 'Low_level_alarm_in_heating_zone'},
+    {key: 'Low_level_alarm_in_the_clear_liquid_area'},
+    {key: 'High_liquid_level_alarm_in_heating_zone'},
+    {key: 'High_liquid_level_alarm_in_the_clear_liquid_area'},
+    {key: 'Overtemperature_alarm_of_oil_water_separation_tank'},
+    {key: 'Heating_zone_level_gauge_channel_failure'},
+    {key: 'The_clear_liquid_zone_level_gauge_channel_failure'},
+    {key: 'Oil_water_separation_RTD_channel_failure'},
+  ]
+
+var tach_dau_totalrow = ['Tổng/TB:','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','"Hey','']; // sum, avg, first, last
+var tach_dau_report_name = "TACH_DAU_Report";
+
+var tach_dau_exsave;
+io.on("connection", function(socket){
+socket.on("tach_dau_msg_Excel_Report", function(data)
+{
+  socket.emit('tach_dau_Excel_Report', tach_dau_exsave);
+})});
+
+  // Excel export function
+function tach_dau_fn_Excel_Report(data,webUrl){
+  exjs.pageSetup(tach_dau_tabname,pagestyle,companyname,add,phonenumber);
+  exjs.setupheader(tach_dau_reportname,tach_dau_reportname_rowpos,tach_dau_header_list,tach_dau_header_rowpos,tach_dau_header_height,tach_dau_header_width);
+  exjs.totalrowcal(total_row_enable,tach_dau_totalrow,totalrow_color);
+  exjs.signrow(offset, signname, signname_pos);
+  exjs.reportFile(report_dir, tach_dau_report_name);
+
+  if (data.length != 0){
+    exjs.exceldata(data,tach_dau_key,webUrl);
+    exjs.fn_exceljs();
+    tach_dau_exsave =  exjs.exfilesave();
   }
 }
