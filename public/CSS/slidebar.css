@@ -3,7 +3,7 @@
     position: absolute; 
     left: 5px; top: 11px; 
     width: 210px; height: 98%;
-    background-color: rgb(40, 107, 128); 
+    background-color: rgb(18, 161, 227); 
 }
 
 /*LOGO*/
@@ -19,14 +19,14 @@
     font-size: 14px; 
     font-weight: normal;
     position: absolute; 
-    left: 10px; top: 20px;
+    left: 10px; top: 30px;
     line-height: 1.8;
 }
 
 /*Nút tìm kiếm*/
 #btt_Search {
     border: none; 
-    background-color: DodgerBlue; 
+    background-color: rgb(46, 56, 201); 
     color: rgb(255, 255, 255);  
     text-align: center; 
     display: inline-block;
@@ -35,7 +35,7 @@
     cursor: pointer;
     position: absolute; 
     width: 188px; height: 40px; 
-    left: 10px; top: 150px;
+    left: 10px; top: 140px;
 }
 
 /*Nút Xuaast Excel*/
@@ -50,6 +50,6 @@
     cursor: pointer;
     position: absolute; 
     width: 188px; height: 40px; 
-    left: 10px; top: 200px;
+    left: 10px; top: 190px;
 }
 
