@@ -362,7 +362,7 @@ var reportname_rowpos      = 5; // Vị trí hàng tên báo cáo
 var header_list            = ["STT","Thời gian","Raw_Water_Conductivity","Pure_Water_Conductivity","Concentrated_Water_Discharge","Raw_Water_Tank_Level_Low","Raw_tank_median","The_raw_water_tank_is_high","Pure_tank_median","The_pure_water_tank_is_high","Ghi chú"]
 var header_rowpos          = 8;  // Vị trí hàng header
 var header_height          = 50; // Độ cao hàng header
-var header_width           = [12,20,15,15,15,15,15,15,15,15,20] // Độ rộng các cột
+var header_width           = [20,20,15,15,15,15,15,15,15,15,20] // Độ rộng các cột
 
 //2. Cài đặt dữ liệu đọc lên từ SQL
 var key = [
